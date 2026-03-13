@@ -399,7 +399,7 @@
 
         function changeZoom(val) {
             if(window.innerWidth > 1000) {
-                document.getElementById('zoom-wrapper').style.transform = scale(${val});
+                document.getElementById('zoom-wrapper').style.transform = `scale(${val})`;
             }
         }
 
@@ -513,7 +513,7 @@
         function removeSkill(index) { skillsArray.splice(index, 1); renderTags(); triggerUpdate(); }
         function renderTags() {
             const container = document.getElementById('skills-tags');
-            container.innerHTML = skillsArray.map((skill, i) => <div class="tag">${skill} <span onclick="removeSkill(${i})">✕</span></div>).join('');
+            container.innerHTML = skillsArray.map((skill, i) => `<div class="tag">${skill} <span onclick="removeSkill(${i})">✕</span></div>`).join('');
         }
 
         function triggerUpdate() {
@@ -546,7 +546,7 @@
             });
             
             document.querySelectorAll('.out-gender').forEach(el => { 
-                el.innerText = genderVal ? Cinsiyet: ${genderVal} : ''; 
+                el.innerText = genderVal ? `Cinsiyet: ${genderVal}` : ''; 
                 el.style.display = genderVal ? 'block' : 'none'; 
             });
 
@@ -560,7 +560,7 @@
             document.querySelectorAll('.out-ref').forEach(el => el.innerText = refVal || "Referans bilgileri...");
             document.querySelectorAll('.ref-area').forEach(el => el.classList.toggle('is-empty', !refVal));
 
-            const cvTagsHtml = skillsArray.length > 0 ? skillsArray.map(s => <div class="cv-tag">${s}</div>).join('') : '<p style="font-size:13px; color:inherit;">Yetenekler...</p>';
+            const cvTagsHtml = skillsArray.length > 0 ? skillsArray.map(s => `<div class="cv-tag">${s}</div>`).join('') : '<p style="font-size:13px; color:inherit;">Yetenekler...</p>';
             document.querySelectorAll('.out-hobby').forEach(el => el.innerHTML = cvTagsHtml);
             document.querySelectorAll('.hobby-area').forEach(el => el.classList.toggle('is-empty', skillsArray.length === 0));
 
@@ -569,7 +569,7 @@
                 let n=block.querySelector('.link-name').value.trim(), u=block.querySelector('.link-url').value.trim();
                 if(n||u) {
                     let href = u.startsWith('http') ? u : 'https://' + u;
-                    linkHTML += <div style="margin-bottom:8px; font-size:13px; word-break: break-all;"><strong>${n}</strong><br><a href="${href}" style="color:inherit; text-decoration:none; opacity:0.8;">${u}</a></div>;
+                    linkHTML += `<div style="margin-bottom:8px; font-size:13px; word-break: break-all;"><strong>${n}</strong><br><a href="${href}" style="color:inherit; text-decoration:none; opacity:0.8;">${u}</a></div>`;
                 }
             });
             document.querySelectorAll('.out-link').forEach(el => el.innerHTML = linkHTML || '<p style="font-size:13px; color:inherit;">Bağlantılar...</p>');
@@ -578,7 +578,7 @@
             let certHTML = '';
             document.querySelectorAll('#cert-container .dynamic-block').forEach(block => {
                 let n=block.querySelector('.cert-name').value.trim(), i=block.querySelector('.cert-inst').value.trim(), y=block.querySelector('.cert-year').value.trim();
-                if(n||i||y) certHTML += <div style="margin-bottom:12px; font-size:13px; line-height:1.4;">${y ? `<span style="font-weight:bold; opacity:0.7; display:block; font-size:12px;">${y}</span>:''}<b>${n}</b> ${i ? '- '+i:''}</div>`;
+                if(n||i||y) certHTML += `<div style="margin-bottom:12px; font-size:13px; line-height:1.4;">${y ? `<span style="font-weight:bold; opacity:0.7; display:block; font-size:12px;">${y}</span>`:''}<b>${n}</b> ${i ? '- '+i:''}</div>`;
             });
             document.querySelectorAll('.out-cert').forEach(el => el.innerHTML = certHTML || '<p style="font-size:13px; color:inherit;">Sertifikalar...</p>');
             document.querySelectorAll('.cert-area').forEach(el => el.classList.toggle('is-empty', !certHTML));
@@ -586,7 +586,7 @@
             let eduHTML = '';
             document.querySelectorAll('#edu-container .dynamic-block').forEach(block => {
                 let l=block.querySelector('.edu-level').value, s=block.querySelector('.edu-school').value.trim(), st=block.querySelector('.edu-start').value.trim(), en=block.querySelector('.edu-end').value.trim();
-                if(l||s||st||en) eduHTML += <div style="margin-bottom:12px; font-size:13px; line-height:1.4;">${st||en ? `<span style="font-weight:bold; opacity:0.7; display:block; font-size:12px;">${st||'-'} - ${en||'Devam'}</span>:''}<b>${l}</b> ${s ? '- '+s:''}</div>`;
+                if(l||s||st||en) eduHTML += `<div style="margin-bottom:12px; font-size:13px; line-height:1.4;">${st||en ? `<span style="font-weight:bold; opacity:0.7; display:block; font-size:12px;">${st||'-'} - ${en||'Devam'}</span>`:''}<b>${l}</b> ${s ? '- '+s:''}</div>`;
             });
             document.querySelectorAll('.out-edu').forEach(el => el.innerHTML = eduHTML || '<p style="font-size:13px; color:inherit;">Eğitim bilgileri...</p>');
             document.querySelectorAll('.edu-area').forEach(el => el.classList.toggle('is-empty', !eduHTML));
@@ -594,7 +594,7 @@
             let expHTML = '';
             document.querySelectorAll('#exp-container .dynamic-block').forEach(block => {
                 let t=block.querySelector('.exp-title').value.trim(), c=block.querySelector('.exp-company').value.trim(), st=block.querySelector('.exp-start').value.trim(), en=block.querySelector('.exp-end').value.trim(), d=block.querySelector('.exp-desc').value.trim();
-                if(t||c||st||en||d) expHTML += <div style="margin-bottom:15px; font-size:13px; line-height:1.4;">${st||en ? `<span style="font-weight:bold; opacity:0.7; display:block; font-size:12px;">${st||'-'} - ${en||'Devam'}</span>:''}<b>${t}</b> ${c ? '| '+c:''}${d ? <div style="margin-top:4px; opacity:0.85; white-space:pre-wrap;">${d}</div>:''}</div>`;
+                if(t||c||st||en||d) expHTML += `<div style="margin-bottom:15px; font-size:13px; line-height:1.4;">${st||en ? `<span style="font-weight:bold; opacity:0.7; display:block; font-size:12px;">${st||'-'} - ${en||'Devam'}</span>`:''}<b>${t}</b> ${c ? '| '+c:''}${d ? `<div style="margin-top:4px; opacity:0.85; white-space:pre-wrap;">${d}</div>`:''}</div>`;
             });
             document.querySelectorAll('.out-exp').forEach(el => el.innerHTML = expHTML || '<p style="font-size:13px; color:inherit;">İş tecrübeleri...</p>');
             document.querySelectorAll('.exp-area').forEach(el => el.classList.toggle('is-empty', !expHTML));
@@ -602,7 +602,7 @@
             let langHTML = '';
             document.querySelectorAll('#lang-container .dynamic-block').forEach(block => {
                 let n=block.querySelector('.lang-name').value.trim(), l=block.querySelector('.lang-level').value;
-                if(n||l) langHTML += <div style="margin-bottom:6px; font-size:13px; display:flex; justify-content:space-between; border-bottom:1px solid rgba(128,128,128,0.2); padding-bottom:3px;"><strong>${n}</strong><span style="opacity:0.8; font-size:12px;">${l}</span></div>;
+                if(n||l) langHTML += `<div style="margin-bottom:6px; font-size:13px; display:flex; justify-content:space-between; border-bottom:1px solid rgba(128,128,128,0.2); padding-bottom:3px;"><strong>${n}</strong><span style="opacity:0.8; font-size:12px;">${l}</span></div>`;
             });
             document.querySelectorAll('.out-lang').forEach(el => el.innerHTML = langHTML || '<p style="font-size:13px; color:inherit;">Diller...</p>');
             document.querySelectorAll('.lang-area').forEach(el => el.classList.toggle('is-empty', !langHTML));
@@ -654,7 +654,7 @@
                 document.getElementById('in-city').value = data.city || '';
                 
                 if (data.gender) {
-                    let el = document.querySelector(input[name="gender"][value="${data.gender}"]);
+                    let el = document.querySelector(`input[name="gender"][value="${data.gender}"]`);
                     if(el) el.checked = true;
                 }
 
