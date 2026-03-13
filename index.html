@@ -69,9 +69,14 @@
         .toolbar select, .toolbar input[type="range"] { padding: 5px 10px; border-radius: 5px; color: #333; vertical-align: middle; margin-left: 5px;}
         
         label { font-weight: 600; font-size: 12px; color: #475569; text-transform: uppercase; margin-top: 25px; margin-bottom: 8px; display: block; }
-        input, textarea, select { width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; background: var(--input-bg); margin-bottom: 10px; font-family: inherit; transition: border-color 0.2s; }
-        input:focus, textarea:focus, select:focus { border-color: var(--primary-color); outline: none; background: #fff; }
+        input[type="text"], input[type="email"], textarea, select { width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; background: var(--input-bg); margin-bottom: 10px; font-family: inherit; transition: border-color 0.2s; }
+        input[type="text"]:focus, input[type="email"]:focus, textarea:focus, select:focus { border-color: var(--primary-color); outline: none; background: #fff; }
         
+        /* Cinsiyet Seçimi Alanı Özel Tasarım */
+        .gender-group { display: flex; gap: 20px; background: var(--input-bg); padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; margin-bottom: 10px; }
+        .gender-group label { margin: 0; font-size: 14px; font-weight: 500; color: var(--text-main); text-transform: none; display: flex; align-items: center; gap: 8px; cursor: pointer;}
+        .gender-group input[type="radio"] { margin: 0; cursor: pointer; }
+
         .btn-group { display: flex; gap: 10px; margin-bottom: 20px; }
         .btn { padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; border: none; font-size: 13px; flex: 1; text-align: center; transition: background 0.2s;}
         .btn-outline { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
@@ -188,7 +193,7 @@
 <body>
 
     <div id="step-1" class="screen active">
-        <h1>Premium CV Şablonunu Seç</h1>
+        <h1>CV Şablonunu Seç</h1>
         <div class="template-container">
             <div class="card minimal" onclick="startEditor('minimalist-theme', '#2A363B')">
                 <div class="card-preview"></div><h2>Minimalist Siyah</h2>
@@ -226,6 +231,17 @@
             <label>Kişisel Bilgiler</label>
             <input type="text" id="in-name" placeholder="Ad Soyad" oninput="triggerUpdate()">
             <input type="text" id="in-job" placeholder="Ünvan (Örn: Yazılım Mühendisi)" oninput="triggerUpdate()">
+            
+            <div class="flex-row">
+                <input type="text" id="in-address" placeholder="Kısa Adres" oninput="triggerUpdate()">
+                <input type="text" id="in-city" placeholder="Şehir" oninput="triggerUpdate()">
+            </div>
+            
+            <div class="gender-group">
+                <label><input type="radio" name="gender" value="Kadın" onchange="triggerUpdate()"> Kadın</label>
+                <label><input type="radio" name="gender" value="Erkek" onchange="triggerUpdate()"> Erkek</label>
+            </div>
+
             <input type="email" id="in-mail" placeholder="E-posta" oninput="triggerUpdate()">
             <input type="text" id="in-phone" placeholder="Telefon Numarası" oninput="triggerUpdate()">
             
@@ -292,7 +308,9 @@
                             <div class="contact-area sec">
                                 <h4>İletişim</h4>
                                 <p class="out-mail" style="margin-bottom:3px;"></p>
-                                <p class="out-phone"></p>
+                                <p class="out-phone" style="margin-bottom:3px;"></p>
+                                <p class="out-location" style="margin-bottom:3px;"></p>
+                                <p class="out-gender"></p>
                             </div>
                             
                             <div class="link-area sec">
@@ -511,9 +529,28 @@
 
             let mailVal = document.getElementById('in-mail').value.trim();
             let phoneVal = document.getElementById('in-phone').value.trim();
-            document.querySelectorAll('.out-mail').forEach(el => el.innerText = mailVal || "eposta@adres.com");
-            document.querySelectorAll('.out-phone').forEach(el => el.innerText = phoneVal || "05XX XXX XX XX");
-            document.querySelectorAll('.contact-area').forEach(el => el.classList.toggle('is-empty', !(mailVal || phoneVal)));
+            let addressVal = document.getElementById('in-address').value.trim();
+            let cityVal = document.getElementById('in-city').value.trim();
+            
+            let genderEl = document.querySelector('input[name="gender"]:checked');
+            let genderVal = genderEl ? genderEl.value : '';
+
+            let locationText = [addressVal, cityVal].filter(Boolean).join(' - ');
+
+            document.querySelectorAll('.out-mail').forEach(el => { el.innerText = mailVal || "eposta@adres.com"; el.style.display = mailVal ? 'block' : 'none'; });
+            document.querySelectorAll('.out-phone').forEach(el => { el.innerText = phoneVal || "05XX XXX XX XX"; el.style.display = phoneVal ? 'block' : 'none'; });
+            
+            document.querySelectorAll('.out-location').forEach(el => { 
+                el.innerText = locationText; 
+                el.style.display = locationText ? 'block' : 'none'; 
+            });
+            
+            document.querySelectorAll('.out-gender').forEach(el => { 
+                el.innerText = genderVal ? `Cinsiyet: ${genderVal}` : ''; 
+                el.style.display = genderVal ? 'block' : 'none'; 
+            });
+
+            document.querySelectorAll('.contact-area').forEach(el => el.classList.toggle('is-empty', !(mailVal || phoneVal || locationText || genderVal)));
 
             let aboutVal = document.getElementById('in-about').value.trim();
             document.querySelectorAll('.out-about').forEach(el => el.innerText = aboutVal || "Kendinizden kısaca bahsedin...");
@@ -572,11 +609,19 @@
         }
 
         function saveData() {
+            let genderEl = document.querySelector('input[name="gender"]:checked');
             const data = {
-                name: document.getElementById('in-name').value, job: document.getElementById('in-job').value,
-                mail: document.getElementById('in-mail').value, phone: document.getElementById('in-phone').value,
-                about: document.getElementById('in-about').value, ref: document.getElementById('in-ref').value,
-                skills: skillsArray, color: document.documentElement.style.getPropertyValue('--cv-color'),
+                name: document.getElementById('in-name').value, 
+                job: document.getElementById('in-job').value,
+                mail: document.getElementById('in-mail').value, 
+                phone: document.getElementById('in-phone').value,
+                address: document.getElementById('in-address').value,
+                city: document.getElementById('in-city').value,
+                gender: genderEl ? genderEl.value : '',
+                about: document.getElementById('in-about').value, 
+                ref: document.getElementById('in-ref').value,
+                skills: skillsArray, 
+                color: document.documentElement.style.getPropertyValue('--cv-color'),
                 font: document.documentElement.style.getPropertyValue('--cv-font'),
                 edu: Array.from(document.querySelectorAll('#edu-container .dynamic-block')).map(b => ({
                     level: b.querySelector('.edu-level').value, school: b.querySelector('.edu-school').value, start: b.querySelector('.edu-start').value, end: b.querySelector('.edu-end').value
@@ -605,6 +650,14 @@
                 document.getElementById('in-job').value = data.job || '';
                 document.getElementById('in-mail').value = data.mail || '';
                 document.getElementById('in-phone').value = data.phone || '';
+                document.getElementById('in-address').value = data.address || '';
+                document.getElementById('in-city').value = data.city || '';
+                
+                if (data.gender) {
+                    let el = document.querySelector(`input[name="gender"][value="${data.gender}"]`);
+                    if(el) el.checked = true;
+                }
+
                 document.getElementById('in-about').value = data.about || '';
                 document.getElementById('in-ref').value = data.ref || '';
                 
@@ -641,7 +694,9 @@
         function clearData() {
             if(confirm("Tüm bilgileriniz silinecek. Emin misiniz?")) {
                 localStorage.removeItem('my_cv_data');
-                document.querySelectorAll('input:not([type="color"]):not([type="range"]), textarea').forEach(el => el.value = '');
+                document.querySelectorAll('input:not([type="color"]):not([type="range"]):not([type="radio"]), textarea').forEach(el => el.value = '');
+                document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+                
                 skillsArray = []; renderTags();
                 
                 ['edu', 'exp', 'lang', 'link', 'cert'].forEach(type => {
@@ -658,6 +713,9 @@
             document.getElementById('in-job').value = "Siber Güvenlik Analisti";
             document.getElementById('in-mail').value = "ahmet.yilmaz@email.com";
             document.getElementById('in-phone').value = "+90 555 123 45 67";
+            document.getElementById('in-address').value = "Atatürk Mah. Cumhuriyet Cad.";
+            document.getElementById('in-city').value = "İstanbul";
+            document.querySelector('input[name="gender"][value="Erkek"]').checked = true;
             document.getElementById('in-about').value = "Siber güvenlik alanında yenilikçi teknolojilere tutkulu analist. \n\nAğ güvenliği ve sızma testleri konularında kendimi geliştiriyorum. Temiz ve güvenli altyapılar oluşturmayı hedefliyorum.";
             document.getElementById('in-ref').value = "Mehmet Demir - CTO, TechCorp - 0532 999 88 77";
             
@@ -712,6 +770,4 @@
         }
     </script>
 </body>
-
 </html>
-
